@@ -1,6 +1,6 @@
 # Trilobyte — Main Implementation
 
-This repository is the **main implementation** of **Trilobyte**: lossless neural audio compression. It contains training code for the models (T5-based stereo prediction, GPT-2 byte-level), tokenization (BPE and raw bytes), dataset metadata, and experiment configs.
+This directory contains the **main training code** for **Trilobyte**: lossless neural audio compression. It is sourced from [ZacharyNovack/lnac](https://github.com/ZacharyNovack/lnac) and includes training code for the models (T5-based stereo prediction, GPT-2 byte-level), tokenization (BPE and raw bytes), dataset metadata, and experiment configs.
 
 ---
 
@@ -8,7 +8,7 @@ This repository is the **main implementation** of **Trilobyte**: lossless neural
 
 | Repo | Description | Link |
 |------|-------------|------|
-| **Experiments / sandbox** | LNAC experiments, FLAC/LMIC eval, lossless codec prototypes (LDAC, LEC, LNAC), perceptual dithering, etc. | [LNAC (ZacharyNovack/lnac)](https://github.com/ZacharyNovack/lnac) |
+| **Original source (this directory)** | LNAC training experiments — the origin of the code in this directory | [ZacharyNovack/lnac](https://github.com/ZacharyNovack/lnac) |
 | **Official lossless codec** | Standalone Trilobyte encode/decode library (CLI + API). | [trilobyte-lossless-codec](https://github.com/pnlong/trilobyte-lossless-codec) |
 
 ---

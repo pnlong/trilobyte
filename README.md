@@ -13,8 +13,8 @@ Research repository for **Trilobyte** — a language-model-based lossless audio 
 |---|---|---|
 | `trilobyte_lossless_codec/` | Official Trilobyte codec (encode/decode CLI) | https://github.com/pnlong/trilobyte-lossless-codec |
 | `baselines/` | Baseline experiments, eval pipelines, NAC codecs | https://github.com/pnlong/lossless_nac |
-| `trilobyte/` | Training code, configs, model experiments | — |
-| `paper_figures/` | Scripts to reproduce paper tables and figures | — |
+| `trilobyte/` | Training code, configs, model experiments | https://github.com/ZacharyNovack/lnac |
+| `paper_figures/` | Scripts to reproduce paper tables and figures | https://github.com/pnlong/lossless_nac |
 
 ---
 
