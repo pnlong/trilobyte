@@ -18,6 +18,16 @@ Research repository for **Trilobyte** — a language-model-based lossless audio 
 
 ---
 
+## Try Trilobyte
+
+The official Trilobyte lossless codec — including our **final trained model** — is available at:
+
+**[https://github.com/pnlong/trilobyte-lossless-codec](https://github.com/pnlong/trilobyte-lossless-codec)**
+
+If you just want to compress or decompress audio with Trilobyte, go there. This umbrella repo is for research, training, and experiments.
+
+---
+
 ## Quick start
 
 - **Encode/decode audio:** See `trilobyte_lossless_codec/` for the CLI.
