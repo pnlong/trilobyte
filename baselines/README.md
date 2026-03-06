@@ -1,6 +1,6 @@
 # baselines
 
-Baseline experiments and evaluation pipelines for the Trilobyte lossless audio compression project.
+Baseline experiments and evaluation pipelines for the Trilobyte lossless audio compression project. Sourced from [pnlong/lossless_nac](https://github.com/pnlong/lossless_nac).
 
 ---
 
