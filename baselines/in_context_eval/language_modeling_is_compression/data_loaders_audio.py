@@ -6,11 +6,9 @@ from typing import Callable, Dict
 import pandas as pd
 import numpy as np
 import scipy.io.wavfile
-import torch
-import torchaudio
+
 import functools
 import glob
-import itertools
 from os.path import basename, dirname
 
 from language_modeling_is_compression import constants
@@ -116,20 +114,6 @@ def _get_ljspeech_dataset(
     yield waveform
 
 
-def _get_epidemic_dataset(
-    is_mu_law: bool = None,
-) -> Iterator[np.ndarray]:
-  """Returns an iterator that yields numpy arrays, one per song."""
-  # get dataset specs
-  native_bit_depth = get_native_bit_depth(dataset="epidemic")
-  if is_mu_law is None:
-    is_mu_law = get_is_mu_law(dataset="epidemic")
-
-  # Return an iterator that yields one track at a time
-  for path in glob.iglob(f"{constants_audio.EPIDEMIC_SOUND_DATA_DIR}/**/*.flac", recursive=True):
-    waveform, sample_rate = utils_audio.load_audio(path=path, bit_depth=native_bit_depth, is_mu_law=is_mu_law)
-    yield waveform
-
 
 def _get_vctk_dataset(
     is_mu_law: bool = None,
@@ -145,61 +129,6 @@ def _get_vctk_dataset(
     waveform, sample_rate = utils_audio.load_audio(path=path, bit_depth=native_bit_depth, is_mu_law=is_mu_law)
     yield waveform
 
-
-def _get_torrent_dataset(
-    native_bit_depth: int,
-    subset: str,
-    is_mu_law: bool = None,
-) -> Iterator[np.ndarray]:
-  """Returns an iterator that yields numpy arrays, one per song."""
-  assert native_bit_depth == 16 or native_bit_depth == 24, f"Invalid native bit depth: {native_bit_depth}. Valid native bit depths for Torrent data are 16 and 24."
-  assert subset is None or subset in ("pro", "amateur", "freeload", "amateur_freeload"), f"Invalid subset: {subset}. Valid subsets are None, 'pro', 'amateur', 'freeload', and 'amateur_freeload'."
-
-  # get dataset specs
-  # native_bit_depth = get_native_bit_depth(dataset=f"torrent{native_bit_depth}b") # don't need because it is already provided
-  if is_mu_law is None:
-    is_mu_law = get_is_mu_law(dataset=f"torrent{native_bit_depth}b")
-
-  # Get paths
-  if subset == "pro":
-    paths = glob.iglob(f"{constants_audio.TORRENT_DATA_DATA_DIR}/Pro/{native_bit_depth}b/**/*.flac", recursive = True)
-  elif subset == "amateur":
-    paths = glob.iglob(f"{constants_audio.TORRENT_DATA_DATA_DIR}/train/Amateur/{native_bit_depth}b/**/*.flac", recursive = True)
-  elif subset == "freeload":
-    paths = glob.iglob(f"{constants_audio.TORRENT_DATA_DATA_DIR}/train/Freeload/{native_bit_depth}b/**/*.flac", recursive = True)
-  elif subset == "amateur_freeload":
-    paths = itertools.chain(
-      glob.iglob(f"{constants_audio.TORRENT_DATA_DATA_DIR}/train/Amateur/{native_bit_depth}b/**/*.flac", recursive=True),
-      glob.iglob(f"{constants_audio.TORRENT_DATA_DATA_DIR}/train/Freeload/{native_bit_depth}b/**/*.flac", recursive=True),
-    )
-  else:
-    paths = glob.iglob(f"{constants_audio.TORRENT_DATA_DATA_DIR}/**/{native_bit_depth}b/**/*.flac", recursive = True)
-
-  # Return an iterator that yields one track at a time
-  TORRENT_TARGET_SAMPLE_RATE = 44100  # Resample all Torrent audio to 44.1 kHz
-  for path in paths:
-    waveform, sample_rate = utils_audio.load_audio(path=path, bit_depth=native_bit_depth, is_mu_law=is_mu_law)
-    if sample_rate != TORRENT_TARGET_SAMPLE_RATE:
-      # Resample to 44.1 kHz using torchaudio (bandlimited interpolation)
-      w_f = waveform.astype(np.float64)
-      w_t = torch.from_numpy(w_f)
-      if w_t.ndim == 1:
-        w_t = w_t.unsqueeze(0)  # (time,) -> (1, time)
-      else:
-        w_t = w_t.T  # (time, channels) -> (channels, time)
-      w_t = torchaudio.functional.resample(
-        w_t,
-        orig_freq=sample_rate,
-        new_freq=TORRENT_TARGET_SAMPLE_RATE,
-      )
-      if waveform.ndim == 1:
-        w_f = w_t.squeeze(0).numpy()
-      else:
-        w_f = w_t.T.numpy()  # (channels, time) -> (time, channels)
-      # Clip to native range before casting back to integer
-      min_val, max_val = -(2 ** (native_bit_depth - 1)), (2 ** (native_bit_depth - 1)) - 1
-      waveform = np.clip(np.round(w_f), min_val, max_val).astype(waveform.dtype)
-    yield waveform
 
 
 def _get_birdvox_dataset(
@@ -450,20 +379,6 @@ def get_ljspeech_iterator(
   return get_dataset_iterator(ljspeech_dataset, chunk_size=chunk_size, num_chunks=num_chunks, bit_depth=bit_depth)
 
 
-def get_epidemic_iterator(
-    chunk_size: int = constants.CHUNK_SIZE_BYTES,
-    num_chunks: int = constants.NUM_CHUNKS,
-    bit_depth: int = None,
-    is_mu_law: bool = None,
-) -> Iterator[bytes]:
-  """Returns an iterator for epidemic data."""
-  if bit_depth is None:
-    bit_depth = get_native_bit_depth(dataset="epidemic")
-  if is_mu_law is None:
-    is_mu_law = get_is_mu_law(dataset="epidemic")
-  epidemic_dataset = _get_epidemic_dataset(is_mu_law=is_mu_law)
-  return get_dataset_iterator(epidemic_dataset, chunk_size=chunk_size, num_chunks=num_chunks, bit_depth=bit_depth)
-
 
 def get_vctk_iterator(
     chunk_size: int = constants.CHUNK_SIZE_BYTES,
@@ -479,22 +394,6 @@ def get_vctk_iterator(
   vctk_dataset = _get_vctk_dataset(is_mu_law=is_mu_law)
   return get_dataset_iterator(vctk_dataset, chunk_size=chunk_size, num_chunks=num_chunks, bit_depth=bit_depth)
 
-
-def get_torrent_iterator(
-    chunk_size: int = constants.CHUNK_SIZE_BYTES,
-    num_chunks: int = constants.NUM_CHUNKS,
-    bit_depth: int = None,
-    native_bit_depth: int = 16, # default to 16-bit
-    subset: str = None,
-    is_mu_law: bool = None,
-) -> Iterator[bytes]:
-  """Returns an iterator for torrent data."""
-  if bit_depth is None:
-    bit_depth = get_native_bit_depth(dataset=f"torrent{native_bit_depth}b")
-  if is_mu_law is None:
-    is_mu_law = get_is_mu_law(dataset=f"torrent{native_bit_depth}b")
-  torrent_dataset = _get_torrent_dataset(native_bit_depth=native_bit_depth, subset=subset, is_mu_law=is_mu_law)
-  return get_dataset_iterator(torrent_dataset, chunk_size=chunk_size, num_chunks=num_chunks, bit_depth=bit_depth)
 
 
 def get_birdvox_iterator(
@@ -567,11 +466,7 @@ def get_audio_data_generator_fn_dict() -> Dict[str, Callable[[], Iterator[bytes]
       audio_data_generator_fn_dict["musdb18stereo" + (f"_{subset}" if subset is not None else "") + (f"_{partition}" if partition is not None else "")] = functools.partial(get_musdb18stereo_iterator, partition=partition, subset=subset)
   audio_data_generator_fn_dict["librispeech"] = get_librispeech_iterator
   audio_data_generator_fn_dict["ljspeech"] = get_ljspeech_iterator
-  audio_data_generator_fn_dict["epidemic"] = get_epidemic_iterator
   audio_data_generator_fn_dict["vctk"] = get_vctk_iterator
-  for native_bit_depth in (16, 24):
-    for subset in (None, "pro", "amateur", "freeload", "amateur_freeload"):
-      audio_data_generator_fn_dict[f"torrent{native_bit_depth}b" + (f"_{subset}" if subset is not None else "")] = functools.partial(get_torrent_iterator, native_bit_depth=native_bit_depth, subset=subset)
   audio_data_generator_fn_dict["birdvox"] = get_birdvox_iterator
   audio_data_generator_fn_dict["beethoven"] = get_beethoven_iterator
   audio_data_generator_fn_dict["youtube_mix"] = get_youtube_mix_iterator
@@ -597,16 +492,10 @@ def get_native_bit_depth(
     dataset.startswith("musdb18stereo") or
     dataset == "librispeech" or
     dataset == "ljspeech" or
-    dataset == "epidemic" or
     dataset == "vctk" or
-    dataset.startswith("torrent16b") or
     dataset == "birdvox"
     ):
     return 16
-  elif (
-    dataset.startswith("torrent24b")
-  ):
-    return 24
   else:
     raise ValueError(f"Invalid dataset: {dataset}.")
 
@@ -632,9 +521,7 @@ def get_is_mu_law(
     dataset.startswith("musdb18stereo") or
     dataset == "librispeech" or
     dataset == "ljspeech" or
-    dataset == "epidemic" or
     dataset == "vctk" or
-    dataset.startswith("torrent") or
     dataset == "birdvox"
   ):
     return False

@@ -29,7 +29,7 @@ import subprocess
 ##################################################
 
 # default output filepath
-DEFAULT_OUTPUT_FILEPATH = "/home/pnlong/lnac/flac_eval_results.csv"
+DEFAULT_OUTPUT_FILEPATH = "/path/to/flac_eval_results.csv"
 
 # FLAC compression level
 DEFAULT_FLAC_COMPRESSION_LEVEL = 5
@@ -47,38 +47,32 @@ RAW_SIZE_PERCENT_DIFFERENCE_THRESHOLD = None # if None, no threshold is applied
 ##################################################
 
 # MUSDB18 Mono
-MUSDB18MONO_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/musdb18mono" # yggdrasil
+MUSDB18MONO_DATA_DIR = "/path/to/musdb18mono"
 
 # MUSDB18 Stereo
-MUSDB18STEREO_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/musdb18stereo" # yggdrasil
+MUSDB18STEREO_DATA_DIR = "/path/to/musdb18stereo"
 
 # LibriSpeech
 LIBRISPEECH_SPLIT = "dev-clean" # "dev-clean" or "train-clean-100"
-LIBRISPEECH_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/librispeech/LibriSpeech/{LIBRISPEECH_SPLIT}" # yggdrasil
+LIBRISPEECH_DATA_DIR = f"/path/to/librispeech/LibriSpeech/{LIBRISPEECH_SPLIT}"
 
 # LJSpeech
-LJSPEECH_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/ljspeech" # yggdrasil
-
-# Epidemic Sound
-EPIDEMIC_SOUND_DATA_DIR = "/mnt/arrakis_data/znovack/epidemic" # pando
+LJSPEECH_DATA_DIR = "/path/to/ljspeech"
 
 # VCTK (speech)
-VCTK_DATA_DIR = "/mnt/arrakis_data/znovack/vctk" # pando
-
-# Torrent Data 16-bit
-TORRENT_DATA_DATA_DIR = "/mnt/arrakis_data/znovack/torr" # yggdrasil
+VCTK_DATA_DIR = "/path/to/vctk"
 
 # Birdvox bioacoustic data
-BIRDVOX_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/birdvox/unit06" # yggdrasil
+BIRDVOX_DATA_DIR = "/path/to/birdvox/unit06"
 
 # Beethoven Piano Sonatas
-BEETHOVEN_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/beethoven" # yggdrasil
+BEETHOVEN_DATA_DIR = "/path/to/beethoven"
 
 # YouTubeMix Audio Dataset
-YOUTUBE_MIX_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/youtube_mix" # yggdrasil
+YOUTUBE_MIX_DATA_DIR = "/path/to/youtube_mix"
 
 # SC09 Speech Dataset
-SC09_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/sc09" # yggdrasil
+SC09_DATA_DIR = "/path/to/sc09"
 
 ##################################################
 
@@ -354,36 +348,6 @@ class LJSpeechDataset(Dataset):
         return paths
 
 
-# Epidemic Sound Dataset
-class EpidemicSoundDataset(Dataset):
-    """Dataset for Epidemic Sound."""
-
-    def __init__(
-        self,
-        bit_depth: int = None,
-        is_mu_law: bool = None,
-    ):
-        native_bit_depth: int = 24
-        bit_depth = native_bit_depth if bit_depth is None else bit_depth
-        native_is_mu_law: bool = False
-        is_mu_law = native_is_mu_law if is_mu_law is None else is_mu_law
-        paths = self._get_paths()
-        super().__init__(
-            name = "epidemic",
-            sample_rate = 48000,
-            bit_depth = bit_depth,
-            native_bit_depth = native_bit_depth,
-            is_mu_law = is_mu_law,
-            native_is_mu_law = native_is_mu_law,
-            is_mono = True,
-            paths = paths,
-        )
-
-    def _get_paths(self) -> List[str]:
-        """Return the paths of the dataset."""
-        paths = glob.glob(f"{EPIDEMIC_SOUND_DATA_DIR}/**/*.flac", recursive = True)
-        return paths
-
 
 # VCTK Dataset
 class VCTKDataset(Dataset):
@@ -415,95 +379,6 @@ class VCTKDataset(Dataset):
         paths = glob.glob(f"{VCTK_DATA_DIR}/**/*.flac", recursive = True)
         return paths
 
-
-# Torrent Dataset Base Class
-class TorrentDataset(Dataset):
-    """Dataset for Torrented Audio Files."""
-    
-    def __init__(
-        self,
-        bit_depth: int,
-        native_bit_depth: int,
-        subset: str,
-        is_mu_law: bool = None,
-    ):
-        native_is_mu_law: bool = False
-        is_mu_law = native_is_mu_law if is_mu_law is None else is_mu_law
-        paths = self._get_paths(
-            native_bit_depth = native_bit_depth,
-            subset = subset,
-        )
-        super().__init__(
-            name = f"torrent{native_bit_depth}b" + (f"_{subset}" if subset is not None else ""),
-            sample_rate = None,
-            bit_depth = bit_depth,
-            native_bit_depth = native_bit_depth,
-            is_mu_law = is_mu_law,
-            native_is_mu_law = native_is_mu_law,
-            is_mono = False,
-            paths = paths,
-        )
-
-    def _get_paths(
-        self,
-        native_bit_depth: int,
-        subset: str,
-    ) -> List[str]:
-        """Return the paths of the dataset."""
-        if subset == "pro":
-            paths = glob.glob(f"{TORRENT_DATA_DATA_DIR}/Pro/{native_bit_depth}b/**/*.flac", recursive = True)
-        elif subset == "amateur":
-            paths = glob.glob(f"{TORRENT_DATA_DATA_DIR}/train/Amateur/{native_bit_depth}b/**/*.flac", recursive = True)
-        elif subset == "freeload":
-            paths = glob.glob(f"{TORRENT_DATA_DATA_DIR}/train/Freeload/{native_bit_depth}b/**/*.flac", recursive = True)
-        elif subset == "amateur_freeload":
-            paths = (
-                glob.glob(f"{TORRENT_DATA_DATA_DIR}/train/Amateur/{native_bit_depth}b/**/*.flac", recursive = True)
-                + glob.glob(f"{TORRENT_DATA_DATA_DIR}/train/Freeload/{native_bit_depth}b/**/*.flac", recursive = True)
-            )
-        else:
-            paths = glob.glob(f"{TORRENT_DATA_DATA_DIR}/**/{native_bit_depth}b/**/*.flac", recursive = True)
-        return paths
-
-
-# Torrent Dataset 16-bit
-class Torrent16BDataset(TorrentDataset):
-    """Dataset for Torrented Audio Files (16-bit)."""
-    
-    def __init__(
-        self,
-        bit_depth: int = None,
-        is_mu_law: bool = None,
-        subset: str = None,
-    ):
-        native_bit_depth: int = 16
-        bit_depth = native_bit_depth if bit_depth is None else bit_depth
-        super().__init__(
-            bit_depth = bit_depth,
-            native_bit_depth = native_bit_depth,
-            subset = subset,
-            is_mu_law = is_mu_law,
-        )
-
-
-# Torrent Dataset 24-bit
-class Torrent24BDataset(TorrentDataset):
-    """Dataset for Torrented Audio Files (24-bit)."""
-
-    def __init__(
-        self,
-        bit_depth: int = None,
-        is_mu_law: bool = None,
-        subset: str = None,
-    ):
-        native_bit_depth: int = 24
-        bit_depth = native_bit_depth if bit_depth is None else bit_depth
-        super().__init__(
-            bit_depth = bit_depth,
-            native_bit_depth = native_bit_depth,
-            subset = subset,
-            is_mu_law = is_mu_law,
-        )
 
 
 # Birdvox Dataset
@@ -646,11 +521,7 @@ def get_dataset_choices() -> List[str]:
                 dataset_choices.append("musdb18" + mono_stereo + mixes + partition) # e.g. "musdb18mono_mixes_train", "musdb18stereo_stems_train", "musdb18stereo_valid", etc.
     dataset_choices.append("librispeech") # librispeech
     dataset_choices.append("ljspeech") # ljspeech
-    dataset_choices.append("epidemic") # epidemicsound
     dataset_choices.append("vctk") # vctk
-    for bit_depth in (16, 24):
-        for torrent_subset in ("", "_pro", "_amateur", "_freeload", "_amateur_freeload"):
-            dataset_choices.append("torrent" + str(bit_depth) + "b" + torrent_subset) # e.g. "torrent16b", "torrent16b_pro", "torrent16b_amateur", "torrent16b_freeload", "torrent16b_amateur_freeload", etc.
     dataset_choices.append("birdvox") # birdvox
     dataset_choices.append("beethoven") # beethoven
     dataset_choices.append("youtube_mix") # youtube_mix
@@ -699,24 +570,8 @@ def get_dataset(
         dataset = LibriSpeechDataset(bit_depth = bit_depth, is_mu_law = is_mu_law)
     elif dataset_name == "ljspeech":
         dataset = LJSpeechDataset(bit_depth = bit_depth, is_mu_law = is_mu_law)
-    elif dataset_name == "epidemic":
-        dataset = EpidemicSoundDataset(bit_depth = bit_depth, is_mu_law = is_mu_law)
     elif dataset_name == "vctk":
         dataset = VCTKDataset(bit_depth = bit_depth, is_mu_law = is_mu_law)
-    elif dataset_name.startswith("torrent"):
-        subset = None # default to all
-        if "amateur_freeload" in dataset_name:
-            subset = "amateur_freeload"
-        elif "pro" in dataset_name:
-            subset = "pro"
-        elif "amateur" in dataset_name:
-            subset = "amateur"
-        elif "freeload" in dataset_name:
-            subset = "freeload"
-        if dataset_name.startswith("torrent16b"):
-            dataset = Torrent16BDataset(bit_depth = bit_depth, is_mu_law = is_mu_law, subset = subset)
-        elif dataset_name.startswith("torrent24b"):
-            dataset = Torrent24BDataset(bit_depth = bit_depth, is_mu_law = is_mu_law, subset = subset)
     elif dataset_name == "birdvox":
         dataset = BirdvoxDataset(bit_depth = bit_depth, is_mu_law = is_mu_law)
     elif dataset_name == "beethoven":

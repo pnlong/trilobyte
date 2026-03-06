@@ -44,14 +44,14 @@ Experiment configs driving multi-dataset or multi-run training without hardcodin
 
 ### `configs/dataset_info/`
 
-Dataset manifests used by `train_gpt2.py` (`AudioByteDataset`) to discover audio files and read correct format. Datasets covered: beethoven, birdvox, epidemic, librispeech, ljspeech, musdb18stereo, sc09, torrent, trilobyte, vctk, youtube_mix.
+Dataset manifests used by `train_gpt2.py` (`AudioByteDataset`) to discover audio files and read correct format. Datasets covered: beethoven, birdvox, librispeech, ljspeech, musdb18stereo, sc09, trilobyte, vctk, youtube_mix.
 
 - **`*_train_info.json` / `*_val_info.json`** — per-dataset train/val split metadata: `filename -> {length, sample_rate, bits_per_sample, n_channels}`
-- **`new_train_files.json` / `new_val_files.json`** — multi-dataset split lists spanning torr, ljspeech, vctk, birdvox, epidemic, sc09, beethoven, youtube_mix
+- **`new_train_files.json` / `new_val_files.json`** — multi-dataset split lists spanning ljspeech, vctk, birdvox, sc09, beethoven, youtube_mix
 - **`musdbstereo_lengths*.json`** — MusDB18 stereo clip lengths for chunking
 - **`musdbstereo_valid_mix_info.json`** — MusDB18 valid-mix file metadata
 
-Paths in configs point at machine-specific dirs (e.g. `graft*`, `arrakis`); adjust for your environment or generate new manifests for your data layout.
+Paths in configs use placeholder paths (`/path/to/dataset/`, `/path/to/metadata/`); update them to match your local data layout.
 
 ---
 

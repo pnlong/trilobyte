@@ -12,7 +12,7 @@ RANDOMIZE_CHUNKS = True
 CHUNKS_PER_SAMPLE = 10
 
 # huggingface model cache directory
-HUGGINGFACE_MODEL_CACHE_DIR = '/trunk/model-hub'
+HUGGINGFACE_MODEL_CACHE_DIR = '/path/to/model-hub'
 
 # default llama model
 DEFAULT_LLAMA_MODEL = 'llama-2-7b'
@@ -36,42 +36,36 @@ USE_SLOW_LOSSLESS_COMPRESSION_FOR_EVALS = False
 USE_TQDM = True # enabled because we are writing to log files
 
 # output filepath for evaluation results
-EVAL_OUTPUT_FILEPATH = "/home/pnlong/lnac/lmic/lmic_eval_results.csv"
-LOSS_BPB_OUTPUT_FILEPATH = "/home/pnlong/lnac/lmic/lmic_eval_loss_bpb_results.csv"
+EVAL_OUTPUT_FILEPATH = "/path/to/lmic_eval_results.csv"
+LOSS_BPB_OUTPUT_FILEPATH = "/path/to/lmic_eval_loss_bpb_results.csv"
 
 # filepaths (general)
-AUDIO_DATA_DIR = "/graft3/datasets/pnlong/lnac/sashimi/data"
+AUDIO_DATA_DIR = "/path/to/audio_data"
 
 # MUSDB18 Mono
-MUSDB18MONO_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/musdb18mono" # yggdrasil
+MUSDB18MONO_DATA_DIR = "/path/to/musdb18mono"
 
 # MUSDB18 Stereo
-MUSDB18STEREO_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/musdb18stereo" # yggdrasil
+MUSDB18STEREO_DATA_DIR = "/path/to/musdb18stereo"
 
 # LibriSpeech
 LIBRISPEECH_SPLIT = "dev-clean" # "dev-clean" or "train-clean-100"
-LIBRISPEECH_DATA_DIR = f"/mnt/arrakis_data/pnlong/lnac/librispeech/LibriSpeech/{LIBRISPEECH_SPLIT}" # yggdrasil
+LIBRISPEECH_DATA_DIR = f"/path/to/librispeech/LibriSpeech/{LIBRISPEECH_SPLIT}"
 
 # LJSpeech
-LJSPEECH_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/ljspeech" # yggdrasil
-
-# Epidemic Sound
-EPIDEMIC_SOUND_DATA_DIR = "/mnt/arrakis_data/znovack/epidemic" # pando
+LJSPEECH_DATA_DIR = "/path/to/ljspeech"
 
 # VCTK (speech)
-VCTK_DATA_DIR = "/mnt/arrakis_data/znovack/vctk" # pando
-
-# Torrent Data 16-bit
-TORRENT_DATA_DATA_DIR = "/mnt/arrakis_data/znovack/torr" # yggdrasil
+VCTK_DATA_DIR = "/path/to/vctk"
 
 # Birdvox bioacoustic data
-BIRDVOX_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/birdvox/unit06" # yggdrasil
+BIRDVOX_DATA_DIR = "/path/to/birdvox/unit06"
 
 # Beethoven Piano Sonatas
-BEETHOVEN_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/beethoven" # yggdrasil
+BEETHOVEN_DATA_DIR = "/path/to/beethoven"
 
 # YouTubeMix Audio Dataset
-YOUTUBE_MIX_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/youtube_mix" # yggdrasil
+YOUTUBE_MIX_DATA_DIR = "/path/to/youtube_mix"
 
 # SC09 Speech Dataset
-SC09_DATA_DIR = "/mnt/arrakis_data/pnlong/lnac/sc09" # yggdrasil
+SC09_DATA_DIR = "/path/to/sc09"
