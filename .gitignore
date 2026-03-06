@@ -1,0 +1,12 @@
+.claude/
+
+.venv/
+
+.DS_Store
+
+wandb
+
+__pycache__/
+.pytest_cache/
+
+.vscode/
