@@ -1,20 +1,15 @@
 # Trilobyte
 
-Research repository for **Trilobyte** — a language-model-based lossless audio codec. This umbrella repo ties together the codec itself, baseline comparisons, training experiments, and paper figures.
-
-- **Original Trilobyte experiments:** [https://github.com/ZacharyNovack/lnac](https://github.com/ZacharyNovack/lnac)
-- **Original baselines home:** [https://github.com/pnlong/lossless_nac](https://github.com/pnlong/lossless_nac)
+This repository contains the research experiments for **Trilobyte** — a language-model-based lossless audio codec. It includes the codec itself, baseline comparisons, training experiments, and paper figures.
 
 ---
 
 ## Repository layout
 
-| Directory | Description | Repo |
-|---|---|---|
-| `trilobyte_lossless_codec/` | Official Trilobyte codec (encode/decode CLI) | https://github.com/pnlong/trilobyte-lossless-codec |
-| `baselines/` | Baseline experiments, eval pipelines, NAC codecs | https://github.com/pnlong/lossless_nac |
-| `trilobyte/` | Training code, configs, model experiments | https://github.com/ZacharyNovack/lnac |
-| `paper_figures/` | Scripts to reproduce paper tables and figures | https://github.com/pnlong/lossless_nac |
+- `trilobyte_lossless_codec/` — Official Trilobyte codec (encode/decode CLI); see [https://github.com/pnlong/trilobyte-lossless-codec](https://github.com/pnlong/trilobyte-lossless-codec)
+- `baselines/` — Baseline experiments, eval pipelines, NAC codecs
+- `trilobyte/` — Training code, configs, model experiments
+- `paper_figures/` — Scripts to reproduce paper tables and figures
 
 ---
 
@@ -24,7 +19,7 @@ The official Trilobyte lossless codec — including our **final trained model** 
 
 **[https://github.com/pnlong/trilobyte-lossless-codec](https://github.com/pnlong/trilobyte-lossless-codec)**
 
-If you just want to compress or decompress audio with Trilobyte, go there. This umbrella repo is for research, training, and experiments.
+If you just want to compress or decompress audio with Trilobyte, go there. This repository is for research, training, and experiments.
 
 ---
 

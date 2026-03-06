@@ -1,4 +1,0 @@
-[submodule "trilobyte_lossless_codec"]
-	path = trilobyte_lossless_codec
-	url = https://github.com/pnlong/trilobyte-lossless-codec.git
-
